@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visor AR Profesional - Studio de Arte y Tecnología</title>
+    <!-- Tailwind CSS para el diseño inmersivo -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <!-- FontAwesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Importar el componente de model-viewer de Google para WebXR -->
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        montserrat: ['Montserrat', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Estilos personalizados para model-viewer */
+        model-viewer {
+            width: 100%;
+            height: 100%;
+            background-color: #060a13;
+            --poster-color: transparent;
+        }
+        /* Personalizar el botón de AR nativo */
+        #ar-button {
+            background-image: url('https://modelviewer.dev/assets/ic_view_in_ar_new_googblue_48dp.png');
+            background-repeat: no-repeat;
+            background-size: 20px 20px;
+            background-position: 12px 50%;
+            background-color: #ffffff;
+            color: #1e293b;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 13px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 32px;
+            padding: 12px 16px 12px 40px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        #ar-button:active {
+            background-color: #f1f5f9;
+        }
+        #ar-button:focus {
+            outline: none;
+        }
+        /* Indicador de carga personalizado */
+        .progress-bar {
+            display: block;
+            width: 33%;
+            height: 10%;
+            max-height: 2px;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+        .update-bar {
+            width: 0%;
+            height: 100%;
+            background-color: #6366f1;
+            transition: width 0.3s;
+        }
+    </style>
+</head>
+<body class="bg-[#060a13] text-slate-100 h-full flex flex-col md:flex-row font-sans overflow-hidden">
+
+    <!-- Panel de control izquierdo (Solo visible en computadoras para desarrollo) -->
+    <aside class="w-full md:w-96 bg-[#0b1329] border-b md:border-b-0 md:border-r border-slate-800 p-6 flex flex-col justify-between z-10 shrink-0">
+        <div class="space-y-6">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-indigo-500/20 border border-indigo-500/40 flex items-center justify-center">
+                    <i class="fa-solid fa-cube text-indigo-400"></i>
+                </div>
+                <div>
+                    <h1 class="font-montserrat font-bold text-sm tracking-wide text-slate-200">PORTAL WEBXR</h1>
+                    <p class="text-[10px] text-slate-400">Studio de Arte y Tecnología • Sesión 12</p>
+                </div>
+            </div>
+
+            <div class="p-4 rounded-xl bg-slate-900/40 border border-slate-800 space-y-3">
+                <h2 class="font-montserrat font-bold text-xs text-indigo-400 uppercase tracking-wider">Carga tu modelo de Spline</h2>
+                <p class="text-xs text-slate-400 leading-relaxed">
+                    Exporta tu proyecto de Spline en formato <strong>GLB (3D Formats)</strong>, cárgalo aquí para comprobar la iluminación y la interactividad táctil en tiempo real.
+                </p>
+                
+                <!-- Input de archivo -->
+                <label class="block mt-4">
+                    <span class="sr-only">Seleccionar GLB</span>
+                    <input type="file" id="file-input" accept=".glb" class="block w-full text-xs text-slate-400
+                        file:mr-4 file:py-2 file:px-4
+                        file:rounded-lg file:border-0
+                        file:text-xs file:font-semibold
+                        file:bg-indigo-500/10 file:text-indigo-400
+                        hover:file:bg-indigo-500/20 file:cursor-pointer cursor-pointer
+                    ">
+                </label>
+            </div>
+
+            <!-- Instrucción del Código -->
+            <div class="space-y-3">
+                <h2 class="font-montserrat font-bold text-xs text-slate-300 uppercase tracking-wider">Tu plantilla de código para el museo</h2>
+                <p class="text-[11px] text-slate-400 leading-relaxed">
+                    Usa esta etiqueta HTML en tu servidor web (Glitch, Vercel) para la exposición final. No requiere programar Javascript complejo:
+                </p>
+                <pre class="p-3 rounded-lg bg-slate-950 text-emerald-400 text-[10px] font-mono overflow-x-auto border border-slate-800">
+&lt;model-viewer 
+  src="tu_obra.glb" 
+  ar 
+  ar-modes="webxr scene-viewer"
+  camera-controls
+  shadow-intensity="1"&gt;
+  &lt;button slot="ar-button" id="ar-button"&gt;
+    Proyectar en Sala
+  &lt;/button&gt;
+&lt;/model-viewer&gt;</pre>
+            </div>
+        </div>
+
+        <!-- Créditos académicos -->
+        <div class="pt-6 border-t border-slate-800/60 hidden md:block">
+            <span class="text-[10px] text-slate-500 uppercase tracking-widest font-semibold font-montserrat">Corriente Alterna</span>
+            <p class="text-[11px] text-slate-400 mt-1">Herramienta de prototipado sin fricción.</p>
+        </div>
+    </aside>
+
+    <!-- Área de Visualización 3D y Realidad Aumentada -->
+    <main class="flex-grow relative h-[60vh] md:h-full">
+        <!-- El Componente de Google -->
+        <model-viewer 
+            id="viewer"
+            src="https://modelviewer.dev/shared-assets/models/Astronaut.glb" 
+            ar 
+            ar-modes="webxr scene-viewer quick-look" 
+            camera-controls 
+            tone-mapping="neutral" 
+            shadow-intensity="1"
+            exposure="1"
+            interaction-prompt="auto">
+            
+            <!-- Barra de progreso -->
+            <div class="progress-bar" slot="progress-bar">
+                <div class="update-bar" id="update-bar"></div>
+            </div>
+
+            <!-- Botón personalizado para lanzar AR -->
+            <button slot="ar-button" id="ar-button">
+                Proyectar en el Salón
+            </button>
+        </model-viewer>
+
+        <!-- Indicador de cámara y control -->
+        <div class="absolute top-4 right-4 bg-slate-950/80 backdrop-blur-md px-3 py-1.5 rounded-lg border border-slate-800/60 text-[10px] text-slate-400 pointer-events-none flex items-center gap-2">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
+            <span>Motor WebXR Activo</span>
+        </div>
+    </main>
+
+    <script>
+        // Lógica para cargar dinámicamente un archivo GLB local
+        const fileInput = document.getElementById('file-input');
+        const viewer = document.getElementById('viewer');
+        const updateBar = document.getElementById('update-bar');
+
+        fileInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                // Crear una URL temporal para el archivo local seleccionado
+                const url = URL.createObjectURL(file);
+                viewer.src = url;
+                
+                // Forzar la recarga del componente
+                viewer.dismissPoster();
+            }
+        });
+
+        // Escuchar el evento de carga del componente
+        viewer.addEventListener('progress', (event) => {
+            const progress = event.detail.totalProgress * 100;
+            updateBar.style.width = `${progress}%`;
+            if (progress === 100) {
+                updateBar.parentElement.style.display = 'none';
+            } else {
+                updateBar.parentElement.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
